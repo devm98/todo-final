@@ -6,7 +6,8 @@ import NonTask from "./NonTask";
 
 export default class TodoApp extends Component {
   state = {
-    data: []
+    data: [],
+    checkItem: false
   };
   addItemHandler = title => {
     const newItem = {
@@ -39,12 +40,26 @@ export default class TodoApp extends Component {
     this.setState({ data: newData });
   };
   chekAllhandler = () => {
-    const newData = this.state.data;
-
-    for (let i = 0; i < newData.length; i++) {
-      newData[i].done = true;
+    const checker = this.state.checkItem;
+    const data = this.state.data;
+    for (let item of data) {
+      if (checker) {
+        item.done = false;
+      } else {
+        item.done = true;
+      }
     }
-    this.setState({ data: newData });
+    this.setState({ data: data, checkItem: !checker });
+  };
+  counterHandler = () => {
+    const data = this.state.data;
+    let checker = 0;
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].done === true) {
+        checker++;
+      }
+    }
+    return checker;
   };
   render() {
     return (
@@ -57,14 +72,16 @@ export default class TodoApp extends Component {
               onClick={this.chekAllhandler}
               className="btn btn-success mr-3"
             >
-              Check All
+              {this.state.checkItem ? "Unchecked" : "Check all"}
             </button>
             <button onClick={this.sortHandler} className="btn btn-success">
               Sort by checked
             </button>
           </div>
         ) : null}
-
+        <h5 className="text-right">
+          Checked:{this.counterHandler()}/{this.state.data.length}
+        </h5>
         <ListItem>
           {this.state.data.length > 0 ? (
             this.state.data.map((item, index) => {
