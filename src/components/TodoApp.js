@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import InputGroup from "./InputGroup";
 import ListItem from "./ListItem";
 import Item from "./Item";
+import NonTask from "./NonTask";
 
 export default class TodoApp extends Component {
   state = {
@@ -50,31 +51,38 @@ export default class TodoApp extends Component {
       <div className="container">
         <h1 className="text-primary m-4">App Todo</h1>
         <InputGroup add={this.addItemHandler} />
-        <div className="text-left mb-4">
-          <button
-            onClick={this.chekAllhandler}
-            className="btn btn-success mr-3"
-          >
-            Check All
-          </button>
-          <button onClick={this.sortHandler} className="btn btn-success">
-            Sort by checked
-          </button>
-        </div>
+        {this.state.data.length > 0 ? (
+          <div className="text-left mb-4">
+            <button
+              onClick={this.chekAllhandler}
+              className="btn btn-success mr-3"
+            >
+              Check All
+            </button>
+            <button onClick={this.sortHandler} className="btn btn-success">
+              Sort by checked
+            </button>
+          </div>
+        ) : null}
+
         <ListItem>
-          {this.state.data.map((item, index) => {
-            return (
-              <Item
-                done={item.done}
-                id={item.id}
-                title={item.title}
-                key={item.id}
-                stt={index + 1}
-                remove={this.removeItemHandler}
-                check={this.checkHandler}
-              />
-            );
-          })}
+          {this.state.data.length > 0 ? (
+            this.state.data.map((item, index) => {
+              return (
+                <Item
+                  done={item.done}
+                  id={item.id}
+                  title={item.title}
+                  key={item.id}
+                  stt={index + 1}
+                  remove={this.removeItemHandler}
+                  check={this.checkHandler}
+                />
+              );
+            })
+          ) : (
+            <NonTask />
+          )}
         </ListItem>
       </div>
     );
