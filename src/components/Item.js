@@ -20,6 +20,7 @@ const Item = props => {
           onClick={checkStatusHandler}
           type="checkbox"
           className="mr-3"
+          checked={props.done}
           id={`checked${props.stt}`}
         />
         <label

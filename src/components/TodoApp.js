@@ -5,8 +5,7 @@ import Item from "./Item";
 
 export default class TodoApp extends Component {
   state = {
-    data: [],
-    chekedAll: true
+    data: []
   };
   addItemHandler = title => {
     const newItem = {
@@ -38,13 +37,14 @@ export default class TodoApp extends Component {
     });
     this.setState({ data: newData });
   };
-  //   chekAllhandler = () => {
-  //     const newData = this.state.data;
-  //     for (let i = 0; i < newData.length; i++) {
-  //       newData[i].done = true;
-  //     }
-  //     this.setState({ data: newData });
-  //   };
+  chekAllhandler = () => {
+    const newData = this.state.data;
+
+    for (let i = 0; i < newData.length; i++) {
+      newData[i].done = true;
+    }
+    this.setState({ data: newData });
+  };
   render() {
     return (
       <div className="container">
@@ -55,7 +55,7 @@ export default class TodoApp extends Component {
             onClick={this.chekAllhandler}
             className="btn btn-success mr-3"
           >
-            Check all
+            Check All
           </button>
           <button onClick={this.sortHandler} className="btn btn-success">
             Sort by checked
