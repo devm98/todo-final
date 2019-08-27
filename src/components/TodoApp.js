@@ -3,6 +3,7 @@ import InputGroup from "./InputGroup";
 import ListItem from "./ListItem";
 import Item from "./Item";
 import NonTask from "./NonTask";
+import { throwStatement, thisExpression } from "@babel/types";
 
 export default class TodoApp extends Component {
   state = {
@@ -61,6 +62,30 @@ export default class TodoApp extends Component {
     }
     return checker;
   };
+  updateHandler = (title, id) => {
+    const data = this.state.data;
+    const index = data.findIndex(item => {
+      return item.id === id;
+    });
+    data[index].title = title;
+    console.log(index);
+    console.log(data[index].title);
+    this.setState({ data: data });
+  };
+  // displayChecked = () => {
+  //   let times = 0;
+  //   const checkk = this.state.checkItem;
+  //   const data = this.state.data;
+  //   for (let i = 0; i < data.length; i++) {
+  //     if (data[i].done === true) {
+  //       times++;
+  //     }
+  //   }
+  //   if (times === data.length) {
+  //     checkk = true;
+  //   }
+  //   this.setState({ checkItem: checkk });
+  // };
   render() {
     return (
       <div className="container">
@@ -74,6 +99,7 @@ export default class TodoApp extends Component {
             >
               {this.state.checkItem ? "Unchecked" : "Check all"}
             </button>
+
             <button onClick={this.sortHandler} className="btn btn-success">
               Sort by checked
             </button>
@@ -94,6 +120,7 @@ export default class TodoApp extends Component {
                   stt={index + 1}
                   remove={this.removeItemHandler}
                   check={this.checkHandler}
+                  update={this.updateHandler}
                 />
               );
             })

@@ -1,51 +1,133 @@
 import React from "react";
 
-const Item = props => {
-  const removeItem = () => {
-    props.remove(props.id);
+class Item extends React.Component {
+  state = {
+    value: this.props.title
   };
-  const checkStatusHandler = () => {
-    props.check(props.id);
+  removeItem = () => {
+    this.props.remove(this.props.id);
   };
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between"
-      }}
-    >
-      <div className="mb-3">
-        <input
-          onClick={checkStatusHandler}
-          type="checkbox"
-          className="mr-3"
-          checked={props.done}
-          id={`checked${props.stt}`}
-        />
-        <label
-          style={{ textDecoration: props.done ? "line-through" : null }}
-          htmlFor={`checked${props.stt}`}
-        >
-          {props.stt}. {props.title}
-        </label>
-      </div>
-      <button
-        onClick={removeItem}
+  checkStatusHandler = () => {
+    this.props.check(this.props.id);
+  };
+  saveDataHandler = () => {
+    this.props.update(this.state.value, this.props.id);
+  };
+  changeTitleHandler = e => {
+    this.setState({ value: e.target.value });
+  };
+  render() {
+    return (
+      <div
         style={{
-          background: "#EA2027",
-          cursor: "pointer",
-          borderRadius: "5px",
-          outline: "none",
-          color: "white",
-          border: "1px solid #EA2027",
-          fontWeight: "600",
-          padding: "5px 10px"
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 0"
         }}
       >
-        <i className="fas fa-trash"></i>
-      </button>
-    </div>
-  );
-};
+        <div>
+          <input
+            onClick={this.checkStatusHandler}
+            type="checkbox"
+            className="mr-3"
+            checked={this.props.done}
+            id={`checked${this.props.stt}`}
+            readOnly
+          />
+          <label
+            style={{ textDecoration: this.props.done ? "line-through" : null }}
+            htmlFor={`checked${this.props.stt}`}
+          >
+            {this.props.stt}. {this.props.title}
+          </label>
+        </div>
+        <div>
+          <button
+            type="button"
+            className="btn btn-primary mr-2"
+            data-toggle="modal"
+            data-target={`#edit${this.props.stt}`}
+          >
+            <i className="far fa-edit"></i>
+          </button>
+          <div
+            className="modal fade"
+            id={`edit${this.props.stt}`}
+            tabIndex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog modal-dialog-centered" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLongTitle">
+                    Edit task
+                  </h5>
+                  <button
+                    type="button"
+                    className="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <form>
+                    <div className="form-group">
+                      <input
+                        onChange={this.changeTitleHandler}
+                        value={this.state.value}
+                        type="text"
+                        className="form-control"
+                        placeholder="Enter title"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <select className="form-control">
+                        <option>
+                          {this.props.done ? "Finish" : "Unfinished"}
+                        </option>
+                        <option>Finish</option>
+                        <option>Unfinished</option>
+                      </select>
+                    </div>
+                  </form>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    onClick={this.saveDataHandler}
+                    type="button"
+                    className="btn btn-primary"
+                    data-dismiss="modal"
+                  >
+                    Save changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={this.removeItem}
+          >
+            <i className="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    );
+  }
+}
+
 export default Item;
