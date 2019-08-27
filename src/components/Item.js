@@ -85,16 +85,6 @@ class Item extends React.Component {
                         placeholder="Enter title"
                       />
                     </div>
-
-                    <div className="form-group">
-                      <select className="form-control">
-                        <option>
-                          {this.props.done ? "Finish" : "Unfinished"}
-                        </option>
-                        <option>Finish</option>
-                        <option>Unfinished</option>
-                      </select>
-                    </div>
                   </form>
                 </div>
                 <div className="modal-footer">
