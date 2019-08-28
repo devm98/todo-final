@@ -79,6 +79,20 @@ export default class TodoApp extends Component {
     });
     this.setState({ data: newData, checkItem: !this.state.checkItem });
   };
+  displayChecked = () => {
+    let count = 0;
+    const { data } = this.state;
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].done === true) {
+        count++;
+      }
+    }
+    if (count === data.length) {
+      this.state.checkItem = true;
+    } else {
+      this.state.checkItem = false;
+    }
+  };
   render() {
     return (
       <div className="container">
@@ -90,6 +104,7 @@ export default class TodoApp extends Component {
               onClick={this.chekAllhandler}
               className="btn btn-success mr-2"
             >
+              {this.displayChecked()}
               {this.state.checkItem ? "Unchecked" : "Check all"}
             </button>
             <button
