@@ -3,7 +3,7 @@ import InputGroup from "./InputGroup";
 import ListItem from "./ListItem";
 import Item from "./Item";
 import NonTask from "./NonTask";
-import { throwStatement, thisExpression } from "@babel/types";
+import { Remove } from "react-lodash";
 
 export default class TodoApp extends Component {
   state = {
@@ -72,20 +72,13 @@ export default class TodoApp extends Component {
     console.log(data[index].title);
     this.setState({ data: data });
   };
-  // displayChecked = () => {
-  //   let times = 0;
-  //   const checkk = this.state.checkItem;
-  //   const data = this.state.data;
-  //   for (let i = 0; i < data.length; i++) {
-  //     if (data[i].done === true) {
-  //       times++;
-  //     }
-  //   }
-  //   if (times === data.length) {
-  //     checkk = true;
-  //   }
-  //   this.setState({ checkItem: checkk });
-  // };
+  removeCheckedHandler = () => {
+    const { data } = this.state;
+    const newData = data.filter(item => {
+      return item.done != true;
+    });
+    this.setState({ data: newData, checkItem: !this.state.checkItem });
+  };
   render() {
     return (
       <div className="container">
@@ -95,13 +88,21 @@ export default class TodoApp extends Component {
           <div className="text-left mb-4">
             <button
               onClick={this.chekAllhandler}
-              className="btn btn-success mr-3"
+              className="btn btn-success mr-2"
             >
               {this.state.checkItem ? "Unchecked" : "Check all"}
             </button>
-
-            <button onClick={this.sortHandler} className="btn btn-success">
+            <button
+              onClick={this.sortHandler}
+              className="btn btn-success  mr-2"
+            >
               Sort by checked
+            </button>
+            <button
+              onClick={this.removeCheckedHandler}
+              className="btn btn-danger"
+            >
+              Delete checked
             </button>
           </div>
         ) : null}

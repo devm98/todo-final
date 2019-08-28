@@ -1,4 +1,10 @@
 import React from "react";
+const styleItem = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "10px 0"
+};
 
 class Item extends React.Component {
   state = {
@@ -18,14 +24,7 @@ class Item extends React.Component {
   };
   render() {
     return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "10px 0"
-        }}
-      >
+      <div style={styleItem}>
         <div>
           <input
             onClick={this.checkStatusHandler}
@@ -59,6 +58,7 @@ class Item extends React.Component {
             aria-labelledby="exampleModalCenterTitle"
             aria-hidden="true"
           >
+            {/* popup-edit */}
             <div className="modal-dialog modal-dialog-centered" role="document">
               <div className="modal-content">
                 <div className="modal-header">
@@ -106,6 +106,7 @@ class Item extends React.Component {
                 </div>
               </div>
             </div>
+            {/* end popup-edit */}
           </div>
           <button
             type="button"
