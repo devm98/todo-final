@@ -3,7 +3,6 @@ import InputGroup from "./InputGroup";
 import ListItem from "./ListItem";
 import Item from "./Item";
 import NonTask from "./NonTask";
-import { Remove } from "react-lodash";
 
 export default class TodoApp extends Component {
   state = {
