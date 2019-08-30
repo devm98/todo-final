@@ -118,13 +118,12 @@ class Item extends React.Component {
             type="button"
             className="btn btn-danger"
             data-toggle="modal"
-            data-target={`#edit${this.props.stt + 1}`}
+            data-target={`#edit${this.props.stt + "remove"}`}
           >
             <i className="fas fa-trash"></i>
           </button>
-          {/* popup remove item */}
           <PopupNoticed
-            idPopup={`edit${this.props.stt + 1}`}
+            idPopup={`edit${this.props.stt + "remove"}`}
             contentPopup="Are you sure remove task ?"
             noticedPopup={this.removeItem}
           />

@@ -11,13 +11,27 @@ export default class TodoApp extends Component {
     checkItem: false
   };
   addItemHandler = title => {
+    let count = 0;
+    const { data } = this.state;
     const newItem = {
       id: Date.now(),
       title: title,
       done: false
     };
-    const newData = [...this.state.data, newItem];
-    this.setState({ data: newData });
+
+    for (let task of data) {
+      if (task.title === title) {
+        count++;
+      }
+    }
+    console.log(count);
+    if (count > 0) {
+      alert("This title already exists");
+      this.setState({ ...data, newItem: { title: "" } });
+    } else {
+      const newData = [...this.state.data, newItem];
+      this.setState({ data: newData });
+    }
   };
   removeItemHandler = id => {
     const newData = this.state.data.filter(item => {
