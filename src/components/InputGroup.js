@@ -38,7 +38,7 @@ export default class InputGroup extends Component {
   };
   render() {
     return (
-      <form className="mb-4" onSubmit={this.submitHandler}>
+      <form className="mb-2" onSubmit={this.submitHandler}>
         <input
           onChange={this.changeValueHanler}
           value={this.state.value}

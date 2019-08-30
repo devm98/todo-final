@@ -1,4 +1,5 @@
 import React from "react";
+import PopupNoticed from "./PopupNoticed";
 const styleItem = {
   display: "flex",
   alignItems: "center",
@@ -21,6 +22,9 @@ class Item extends React.Component {
   };
   changeTitleHandler = e => {
     this.setState({ value: e.target.value });
+  };
+  defaultValue = () => {
+    this.setState({ value: this.props.title });
   };
   render() {
     return (
@@ -59,6 +63,7 @@ class Item extends React.Component {
             aria-hidden="true"
           >
             {/* popup-edit */}
+
             <div className="modal-dialog modal-dialog-centered" role="document">
               <div className="modal-content">
                 <div className="modal-header">
@@ -92,6 +97,7 @@ class Item extends React.Component {
                     type="button"
                     className="btn btn-secondary"
                     data-dismiss="modal"
+                    onClick={this.defaultValue}
                   >
                     Close
                   </button>
@@ -111,10 +117,17 @@ class Item extends React.Component {
           <button
             type="button"
             className="btn btn-danger"
-            onClick={this.removeItem}
+            data-toggle="modal"
+            data-target={`#edit${this.props.stt + 1}`}
           >
             <i className="fas fa-trash"></i>
           </button>
+          {/* popup remove item */}
+          <PopupNoticed
+            idPopup={`edit${this.props.stt + 1}`}
+            contentPopup="Are you sure remove task ?"
+            noticedPopup={this.removeItem}
+          />
         </div>
       </div>
     );

@@ -3,6 +3,7 @@ import InputGroup from "./InputGroup";
 import ListItem from "./ListItem";
 import Item from "./Item";
 import NonTask from "./NonTask";
+import PopupNoticed from "./PopupNoticed";
 
 export default class TodoApp extends Component {
   state = {
@@ -95,7 +96,7 @@ export default class TodoApp extends Component {
   render() {
     return (
       <div className="container">
-        <h1 className="text-primary m-4">App Todo</h1>
+        <h1 className="text-primary mb-4">App Todo</h1>
         <InputGroup add={this.addItemHandler} />
         {this.state.data.length > 0 ? (
           <div className="text-left mb-4">
@@ -113,11 +114,17 @@ export default class TodoApp extends Component {
               Sort by checked
             </button>
             <button
-              onClick={this.removeCheckedHandler}
               className="btn btn-danger"
+              data-toggle="modal"
+              data-target="#removeChecked"
             >
               Delete checked
             </button>
+            <PopupNoticed
+              idPopup={this.counterHandler() > 0 ? "removeChecked" : null}
+              contentPopup="Are you sure remove task ?"
+              noticedPopup={this.removeCheckedHandler}
+            />
           </div>
         ) : null}
         <h5 className="text-right">
