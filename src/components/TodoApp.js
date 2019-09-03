@@ -18,16 +18,13 @@ export default class TodoApp extends Component {
       title: title,
       done: false
     };
-
     for (let task of data) {
       if (task.title === title) {
         count++;
       }
     }
-    console.log(count);
-    if (count > 0) {
-      alert("This title already exists");
-      this.setState({ ...data, newItem: { title: "" } });
+    if (count !== 0) {
+      alert("This title already exists !!!");
     } else {
       const newData = [...this.state.data, newItem];
       this.setState({ data: newData });
@@ -82,9 +79,8 @@ export default class TodoApp extends Component {
       return item.id === id;
     });
     data[index].title = title;
-    console.log(index);
-    console.log(data[index].title);
-    this.setState({ data: data });
+
+    this.setState({ data: data, noticed: false });
   };
   removeCheckedHandler = () => {
     const { data } = this.state;
@@ -107,11 +103,12 @@ export default class TodoApp extends Component {
       this.state.checkItem = false;
     }
   };
+
   render() {
     return (
       <div className="container">
         <h1 className="text-primary mb-4">App Todo</h1>
-        <InputGroup add={this.addItemHandler} />
+        <InputGroup popup={this.state.popup} add={this.addItemHandler} />
         {this.state.data.length > 0 ? (
           <div className="text-left mb-4">
             <button

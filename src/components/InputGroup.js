@@ -29,8 +29,9 @@ export default class InputGroup extends Component {
   };
   submitHandler = event => {
     event.preventDefault();
-    if (this.state.value != " " && this.state.value != "") {
-      this.props.add(this.state.value);
+    let vl = this.state.value.trim();
+    if (vl !== "") {
+      this.props.add(vl);
     } else {
       alert("Nho nhap ban oi ~");
     }
@@ -46,7 +47,12 @@ export default class InputGroup extends Component {
           placeholder="Input your here..."
           style={styleIpt}
         />
-        <button type="submit" style={styleBtn}>
+        <button
+          data-toggle="modal"
+          data-target="#popupNoticed"
+          type="submit"
+          style={styleBtn}
+        >
           ADD TASK
         </button>
       </form>

@@ -9,7 +9,8 @@ const styleItem = {
 
 class Item extends React.Component {
   state = {
-    value: this.props.title
+    value: this.props.title,
+    hide: false
   };
   removeItem = () => {
     this.props.remove(this.props.id);
@@ -20,12 +21,14 @@ class Item extends React.Component {
   saveDataHandler = () => {
     this.props.update(this.state.value, this.props.id);
   };
+
   changeTitleHandler = e => {
     this.setState({ value: e.target.value });
   };
   defaultValue = () => {
     this.setState({ value: this.props.title });
   };
+
   render() {
     return (
       <div style={styleItem}>
@@ -63,7 +66,6 @@ class Item extends React.Component {
             aria-hidden="true"
           >
             {/* popup-edit */}
-
             <div className="modal-dialog modal-dialog-centered" role="document">
               <div className="modal-content">
                 <div className="modal-header">
@@ -105,7 +107,7 @@ class Item extends React.Component {
                     onClick={this.saveDataHandler}
                     type="button"
                     className="btn btn-primary"
-                    data-dismiss="modal"
+                    data-dismiss={`modal`}
                   >
                     Save changes
                   </button>
