@@ -9,7 +9,9 @@ export default class TodoApp extends Component {
   state = {
     data: [],
     checkItem: false,
-    isDisplay: true
+    isDisplay: true,
+    valueSearch: "",
+    dataVirtual: []
   };
   addItemHandler = title => {
     let count = 0;
@@ -28,7 +30,7 @@ export default class TodoApp extends Component {
       alert("This title already exists !!!");
     } else {
       const newData = [...this.state.data, newItem];
-      this.setState({ data: newData });
+      this.setState({ data: newData, dataVirtual: newData });
     }
   };
   displayNoticedHandler = title => {
@@ -121,7 +123,32 @@ export default class TodoApp extends Component {
       this.state.checkItem = false;
     }
   };
-
+  changeValueSearchHandler = e => {
+    this.setState({ valueSearch: e.target.value });
+  };
+  submitValueSearchHandler = e => {
+    e.preventDefault();
+    let count = 0;
+    const oldData = this.state.dataVirtual;
+    for (let task of oldData) {
+      if (task.title === this.state.valueSearch.trim()) {
+        count++;
+      }
+    }
+    console.log(count);
+    if (count === 0) {
+      this.setState({ data: oldData });
+      alert("Not exists !!!");
+    } else if (this.state.valueSearch === "") {
+      this.setState({ data: oldData });
+    } else {
+      const newData = this.state.data.filter(task => {
+        return task.title == this.state.valueSearch;
+      });
+      this.setState({ data: newData });
+    }
+    // this.setState({ data: oldData });
+  };
   render() {
     return (
       <div className="container">
@@ -153,10 +180,13 @@ export default class TodoApp extends Component {
                 Delete checked
               </button>
               <form
+                onSubmit={this.submitValueSearchHandler}
                 style={{ float: "right" }}
                 className="form-inline my-2 my-lg-0"
               >
                 <input
+                  onChange={this.changeValueSearchHandler}
+                  value={this.state.valueSearch}
                   className="form-control mr-sm-2"
                   type="search"
                   placeholder="Search"
