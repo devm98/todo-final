@@ -8,7 +8,8 @@ import PopupNoticed from "./PopupNoticed";
 export default class TodoApp extends Component {
   state = {
     data: [],
-    checkItem: false
+    checkItem: false,
+    isDisplay: true
   };
   addItemHandler = title => {
     let count = 0;
@@ -29,6 +30,29 @@ export default class TodoApp extends Component {
       const newData = [...this.state.data, newItem];
       this.setState({ data: newData });
     }
+  };
+  displayNoticedHandler = title => {
+    const data = this.state.data;
+    if (title.trim() == "") {
+      this.setState({
+        isDisplay: false
+      });
+      return null;
+    }
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].title.trim() === title.trim()) {
+        this.setState({ isDisplay: false });
+        return false;
+      }
+    }
+    // for (let task of this.state.data) {
+    //   if (task.title.trim() === title.trim()) {
+    //     this.setState({ isDisplay: false });
+    //     return false;
+    //   }
+    // }
+    this.setState({ isDisplay: true });
+    return true;
   };
   removeItemHandler = id => {
     const newData = this.state.data.filter(item => {
@@ -146,6 +170,8 @@ export default class TodoApp extends Component {
             this.state.data.map((item, index) => {
               return (
                 <Item
+                  data={this.state.data}
+                  notice={this.state.notification}
                   done={item.done}
                   id={item.id}
                   title={item.title}
@@ -154,6 +180,8 @@ export default class TodoApp extends Component {
                   remove={this.removeItemHandler}
                   check={this.checkHandler}
                   update={this.updateHandler}
+                  displayNoticed={this.displayNoticedHandler}
+                  display={this.state.isDisplay}
                 />
               );
             })

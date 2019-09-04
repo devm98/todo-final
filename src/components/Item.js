@@ -9,8 +9,9 @@ const styleItem = {
 
 class Item extends React.Component {
   state = {
-    value: this.props.title,
-    hide: false
+    value: this.props.title.trim(),
+    dismiss: "none",
+    notification: ""
   };
   removeItem = () => {
     this.props.remove(this.props.id);
@@ -19,14 +20,46 @@ class Item extends React.Component {
     this.props.check(this.props.id);
   };
   saveDataHandler = () => {
-    this.props.update(this.state.value, this.props.id);
+    if (this.state.value !== this.props.title.trim()) {
+      if (this.props.displayNoticed(this.state.value)) {
+        this.props.update(this.state.value, this.props.id);
+        this.setState({ value: this.state.value.trim() });
+      }
+    }
   };
-
+  changeStateHandler = () => {
+    this.setState({
+      dismiss: "modal",
+      notification: ""
+    });
+  };
   changeTitleHandler = e => {
-    this.setState({ value: e.target.value });
+    this.setState({ value: e.target.value, notification: "" });
+    if (e.target.value !== this.props.title.trim()) {
+      if (this.props.displayNoticed(e.target.value) === true) {
+        this.setState({
+          dismiss: "modal"
+        });
+      } else if (this.props.displayNoticed(e.target.value) === false) {
+        this.setState({
+          dismiss: "none",
+          notification: "*This title already exists !!!*"
+        });
+      } else if (this.props.displayNoticed(e.target.value) === null) {
+        this.setState({
+          dismiss: "none",
+          notification: "*This field cannot be empty!!!*"
+        });
+      }
+    } else {
+      this.setState({
+        dismiss: "modal",
+        notification: "*you not update!!!*"
+      });
+    }
   };
   defaultValue = () => {
-    this.setState({ value: this.props.title });
+    this.setState({ value: this.props.title.trim(), notification: "" });
   };
 
   render() {
@@ -50,6 +83,7 @@ class Item extends React.Component {
         </div>
         <div>
           <button
+            onClick={this.changeStateHandler}
             type="button"
             className="btn btn-primary mr-2"
             data-toggle="modal"
@@ -91,6 +125,12 @@ class Item extends React.Component {
                         className="form-control"
                         placeholder="Enter title"
                       />
+                      <p
+                        style={{ height: "5px" }}
+                        className="mt-2 text-left text-danger"
+                      >
+                        {!this.props.display ? this.state.notification : ""}
+                      </p>
                     </div>
                   </form>
                 </div>
@@ -107,7 +147,7 @@ class Item extends React.Component {
                     onClick={this.saveDataHandler}
                     type="button"
                     className="btn btn-primary"
-                    data-dismiss={`modal`}
+                    data-dismiss={this.state.dismiss}
                   >
                     Save changes
                   </button>
