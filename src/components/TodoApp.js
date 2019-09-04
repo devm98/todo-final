@@ -30,7 +30,7 @@ export default class TodoApp extends Component {
       alert("This title already exists !!!");
     } else {
       const newData = [...this.state.data, newItem];
-      this.setState({ data: newData, dataVirtual: newData });
+      this.setState({ data: newData });
     }
   };
   displayNoticedHandler = title => {
@@ -54,7 +54,7 @@ export default class TodoApp extends Component {
     const newData = this.state.data.filter(item => {
       return item.id !== id;
     });
-    this.setState({ data: newData });
+    this.setState({ data: newData, dataVirtual: [], valueSearch: "" });
   };
   checkHandler = id => {
     const newData = this.state.data;
@@ -107,7 +107,12 @@ export default class TodoApp extends Component {
     const newData = data.filter(item => {
       return item.done != true;
     });
-    this.setState({ data: newData, checkItem: !this.state.checkItem });
+    this.setState({
+      data: newData,
+      checkItem: !this.state.checkItem,
+      dataVirtual: [],
+      valueSearch: ""
+    });
   };
   displayChecked = () => {
     let count = 0;
@@ -128,26 +133,10 @@ export default class TodoApp extends Component {
   };
   submitValueSearchHandler = e => {
     e.preventDefault();
-    let count = 0;
-    const oldData = this.state.dataVirtual;
-    for (let task of oldData) {
-      if (task.title === this.state.valueSearch.trim()) {
-        count++;
-      }
-    }
-    console.log(count);
-    if (count === 0) {
-      this.setState({ data: oldData });
-      alert("Not exists !!!");
-    } else if (this.state.valueSearch === "") {
-      this.setState({ data: oldData });
-    } else {
-      const newData = this.state.data.filter(task => {
-        return task.title == this.state.valueSearch;
-      });
-      this.setState({ data: newData });
-    }
-    // this.setState({ data: oldData });
+    const newData = this.state.data.filter(task => {
+      return task.title === this.state.valueSearch;
+    });
+    this.setState({ dataVirtual: newData });
   };
   render() {
     return (
@@ -198,6 +187,26 @@ export default class TodoApp extends Component {
                 >
                   Search
                 </button>
+                <ListItem widths="100%">
+                  {this.state.dataVirtual.map((item, index) => {
+                    return (
+                      <Item
+                        data={this.state.data}
+                        notice={this.state.notification}
+                        done={item.done}
+                        id={item.id}
+                        title={item.title}
+                        key={item.id}
+                        stt={index + 1}
+                        remove={this.removeItemHandler}
+                        check={this.checkHandler}
+                        update={this.updateHandler}
+                        displayNoticed={this.displayNoticedHandler}
+                        display={this.state.isDisplay}
+                      />
+                    );
+                  })}
+                </ListItem>
               </form>
               <PopupNoticed
                 idPopup={this.counterHandler() > 0 ? "removeChecked" : null}
@@ -211,7 +220,7 @@ export default class TodoApp extends Component {
           </div>
         ) : null}
 
-        <ListItem>
+        <ListItem widths="50%">
           {this.state.data.length > 0 ? (
             this.state.data.map((item, index) => {
               return (

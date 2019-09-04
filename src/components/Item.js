@@ -65,7 +65,12 @@ class Item extends React.Component {
   render() {
     return (
       <div style={styleItem}>
-        <div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center"
+          }}
+        >
           <input
             onClick={this.checkStatusHandler}
             type="checkbox"
@@ -75,7 +80,10 @@ class Item extends React.Component {
             readOnly
           />
           <label
-            style={{ textDecoration: this.props.done ? "line-through" : null }}
+            style={{
+              textDecoration: this.props.done ? "line-through" : null,
+              margin: 0
+            }}
             htmlFor={`checked${this.props.stt}`}
           >
             {this.props.stt}. {this.props.title}
