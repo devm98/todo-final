@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 const styleIpt = {
-  width: "90%",
+  width: "30%",
   padding: "10px",
   borderTopLeftRadius: "5px",
   borderBottomLeftRadius: "5px",
@@ -9,9 +9,8 @@ const styleIpt = {
 };
 const styleBtn = {
   background: "#be2edd",
-  padding: "10px 0",
+  padding: "10px",
   cursor: "pointer",
-  width: "10%",
   borderTopRightRadius: "5px",
   borderBottomRightRadius: "5px",
   borderWidth: "1px 1px 1px 0",
@@ -20,6 +19,7 @@ const styleBtn = {
   border: "1px solid #be2edd",
   fontWeight: "600"
 };
+
 export default class InputGroup extends Component {
   state = {
     value: ""
@@ -39,23 +39,50 @@ export default class InputGroup extends Component {
   };
   render() {
     return (
-      <form className="mb-2" onSubmit={this.submitHandler}>
-        <input
-          onChange={this.changeValueHanler}
-          value={this.state.value}
-          type="text"
-          placeholder="Input your here..."
-          style={styleIpt}
-        />
-        <button
-          data-toggle="modal"
-          data-target="#popupNoticed"
-          type="submit"
-          style={styleBtn}
-        >
-          ADD TASK
-        </button>
-      </form>
+      <div>
+        <div>
+          <p>
+            <button
+              className="btn btn-primary"
+              type="button"
+              data-toggle="collapse"
+              data-target="#collapseExample"
+              aria-expanded="false"
+              aria-controls="collapseExample"
+            >
+              <i className="fas fa-plus"></i>
+            </button>
+          </p>
+          <div className="collapse" id="collapseExample">
+            <div
+              style={{ padding: 0, border: "none" }}
+              className="card card-body"
+            >
+              <form
+                style={{ width: "100%", float: "left" }}
+                className="mb-2"
+                onSubmit={this.submitHandler}
+              >
+                <input
+                  onChange={this.changeValueHanler}
+                  value={this.state.value}
+                  type="text"
+                  placeholder="Input your here..."
+                  style={styleIpt}
+                />
+                <button
+                  data-toggle="modal"
+                  data-target="#popupNoticed"
+                  type="submit"
+                  style={styleBtn}
+                >
+                  ADD TASK
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 }

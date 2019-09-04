@@ -45,12 +45,6 @@ export default class TodoApp extends Component {
         return false;
       }
     }
-    // for (let task of this.state.data) {
-    //   if (task.title.trim() === title.trim()) {
-    //     this.setState({ isDisplay: false });
-    //     return false;
-    //   }
-    // }
     this.setState({ isDisplay: true });
     return true;
   };
@@ -131,40 +125,62 @@ export default class TodoApp extends Component {
   render() {
     return (
       <div className="container">
-        <h1 className="text-primary mb-4">App Todo</h1>
-        <InputGroup popup={this.state.popup} add={this.addItemHandler} />
+        <div className=" mt-2 mb-3 ">
+          <h1 className="text-primary d-inline-block  mt-2 mb-3">App Todo</h1>
+          <InputGroup popup={this.state.popup} add={this.addItemHandler} />
+        </div>
         {this.state.data.length > 0 ? (
-          <div className="text-left mb-4">
-            <button
-              onClick={this.chekAllhandler}
-              className="btn btn-success mr-2"
-            >
-              {this.displayChecked()}
-              {this.state.checkItem ? "Unchecked" : "Check all"}
-            </button>
-            <button
-              onClick={this.sortHandler}
-              className="btn btn-success  mr-2"
-            >
-              Sort by checked
-            </button>
-            <button
-              className="btn btn-danger"
-              data-toggle="modal"
-              data-target="#removeChecked"
-            >
-              Delete checked
-            </button>
-            <PopupNoticed
-              idPopup={this.counterHandler() > 0 ? "removeChecked" : null}
-              contentPopup="Are you sure remove task ?"
-              noticedPopup={this.removeCheckedHandler}
-            />
+          <div>
+            <div className="mb-2 mt-2">
+              <button
+                onClick={this.chekAllhandler}
+                className="btn btn-success mr-2"
+              >
+                {this.displayChecked()}
+                {this.state.checkItem ? "Unchecked" : "Check all"}
+              </button>
+              <button
+                onClick={this.sortHandler}
+                className="btn btn-success  mr-2"
+              >
+                Sort by checked
+              </button>
+              <button
+                className="btn btn-danger"
+                data-toggle="modal"
+                data-target="#removeChecked"
+              >
+                Delete checked
+              </button>
+              <form
+                style={{ float: "right" }}
+                className="form-inline my-2 my-lg-0"
+              >
+                <input
+                  className="form-control mr-sm-2"
+                  type="search"
+                  placeholder="Search"
+                  aria-label="Search"
+                />
+                <button
+                  className="btn btn-outline-success my-2 my-sm-0"
+                  type="submit"
+                >
+                  Search
+                </button>
+              </form>
+              <PopupNoticed
+                idPopup={this.counterHandler() > 0 ? "removeChecked" : null}
+                contentPopup="Are you sure remove task ?"
+                noticedPopup={this.removeCheckedHandler}
+              />
+            </div>
+            <h5 className="">
+              Checked:{this.counterHandler()}/{this.state.data.length}
+            </h5>
           </div>
         ) : null}
-        <h5 className="text-right">
-          Checked:{this.counterHandler()}/{this.state.data.length}
-        </h5>
+
         <ListItem>
           {this.state.data.length > 0 ? (
             this.state.data.map((item, index) => {
