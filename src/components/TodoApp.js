@@ -13,6 +13,12 @@ export default class TodoApp extends Component {
     valueSearch: "",
     dataVirtual: []
   };
+  componentWillMount() {
+    if (localStorage && localStorage.getItem("data")) {
+      let data = JSON.parse(localStorage.getItem("data"));
+      this.setState({ data: data });
+    }
+  }
   addItemHandler = title => {
     let count = 0;
     const { data } = this.state;
@@ -21,8 +27,8 @@ export default class TodoApp extends Component {
       title: title,
       done: false
     };
-    for (let task of data) {
-      if (task.title === title) {
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].title === title) {
         count++;
       }
     }
@@ -31,6 +37,7 @@ export default class TodoApp extends Component {
     } else {
       const newData = [...this.state.data, newItem];
       this.setState({ data: newData });
+      localStorage.setItem("data", JSON.stringify(newData));
     }
   };
   displayNoticedHandler = title => {
@@ -55,6 +62,8 @@ export default class TodoApp extends Component {
       return item.id !== id;
     });
     this.setState({ data: newData, dataVirtual: [], valueSearch: "" });
+    // localStorage.removeItem("data");
+    localStorage.setItem("data", JSON.stringify(newData));
   };
   checkHandler = id => {
     const newData = this.state.data;
@@ -64,12 +73,14 @@ export default class TodoApp extends Component {
     newData[index].done = !newData[index].done;
 
     this.setState({ data: newData });
+    localStorage.setItem("data", JSON.stringify(newData));
   };
   sortHandler = () => {
     const newData = this.state.data.sort((itemA, itemB) => {
       return itemA.done - itemB.done;
     });
     this.setState({ data: newData });
+    localStorage.setItem("data", JSON.stringify(newData));
   };
   chekAllhandler = () => {
     const checker = this.state.checkItem;
@@ -82,6 +93,7 @@ export default class TodoApp extends Component {
       }
     }
     this.setState({ data: data, checkItem: !checker });
+    localStorage.setItem("data", JSON.stringify(data));
   };
   counterHandler = () => {
     const data = this.state.data;
@@ -100,7 +112,8 @@ export default class TodoApp extends Component {
     });
     data[index].title = title;
 
-    this.setState({ data: data, noticed: false });
+    this.setState({ data: data });
+    localStorage.setItem("data", JSON.stringify(data));
   };
   removeCheckedHandler = () => {
     const { data } = this.state;
@@ -113,6 +126,7 @@ export default class TodoApp extends Component {
       dataVirtual: [],
       valueSearch: ""
     });
+    localStorage.setItem("data", JSON.stringify(newData));
   };
   displayChecked = () => {
     let count = 0;
@@ -134,10 +148,13 @@ export default class TodoApp extends Component {
   submitValueSearchHandler = e => {
     e.preventDefault();
     const newData = this.state.data.filter(task => {
-      return task.title === this.state.valueSearch;
+      let title = task.title.toLowerCase();
+      let value = this.state.valueSearch.toLowerCase();
+      return title.includes(value);
     });
     this.setState({ dataVirtual: newData });
   };
+
   render() {
     return (
       <div className="container">
@@ -215,7 +232,7 @@ export default class TodoApp extends Component {
               />
             </div>
             <h5 className="">
-              Checked:{this.counterHandler()}/{this.state.data.length}
+              Checked: {this.counterHandler()}/{this.state.data.length}
             </h5>
           </div>
         ) : null}
