@@ -1,5 +1,7 @@
 import React from "react";
 import PopupNoticed from "./PopupNoticed";
+import callApi from "./../utils/apiCaller";
+
 const styleItem = {
   display: "flex",
   alignItems: "center",
@@ -9,22 +11,11 @@ const styleItem = {
 
 class Item extends React.Component {
   state = {
-    value: this.props.title.trim(),
+    value: this.props.title,
     dismiss: "none",
     notification: ""
   };
-  componentWillMount() {
-    if (localStorage && localStorage.getItem("value")) {
-      let value = JSON.parse(localStorage.getItem("value"));
-      this.setState({ value: value });
-    }
-    if (localStorage && localStorage.getItem("changeVL")) {
-      let value = JSON.parse(localStorage.getItem("changVL"));
-      if (value == this.props.title.trim()) {
-        this.setState({ notification: "*You not update!!!*" });
-      }
-    }
-  }
+
   removeItem = () => {
     this.props.remove(this.props.id);
   };
@@ -36,8 +27,6 @@ class Item extends React.Component {
       if (this.props.displayNoticed(this.state.value)) {
         this.props.update(this.state.value, this.props.id);
         this.setState({ value: this.state.value.trim() });
-        localStorage.setItem("value", JSON.stringify(this.props.title.trim()));
-        localStorage.removeItem("value");
       }
     }
   };
@@ -49,8 +38,7 @@ class Item extends React.Component {
   };
   changeTitleHandler = e => {
     this.setState({ value: e.target.value, notification: "" });
-    localStorage.setItem("changeVl", JSON.stringify(e.target.value));
-    localStorage.removeItem("changeVl");
+
     if (e.target.value !== this.props.title.trim()) {
       if (this.props.displayNoticed(e.target.value) === true) {
         this.setState({
@@ -86,13 +74,13 @@ class Item extends React.Component {
             onClick={this.checkStatusHandler}
             type="checkbox"
             className="mr-3"
-            checked={this.props.done}
+            checked={this.props.status}
             id={`checked${this.props.stt}`}
             readOnly
           />
           <label
             style={{
-              textDecoration: this.props.done ? "line-through" : null,
+              textDecoration: this.props.status ? "line-through" : null,
               margin: 0
             }}
             htmlFor={`checked${this.props.stt}`}

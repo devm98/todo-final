@@ -4,7 +4,7 @@ import ListItem from "./ListItem";
 import Item from "./Item";
 import NonTask from "./NonTask";
 import PopupNoticed from "./PopupNoticed";
-
+import callApi from "./../utils/apiCaller";
 export default class TodoApp extends Component {
   state = {
     data: [],
@@ -13,36 +13,40 @@ export default class TodoApp extends Component {
     valueSearch: "",
     dataVirtual: []
   };
-  componentWillMount() {
-    if (localStorage && localStorage.getItem("data")) {
-      let data = JSON.parse(localStorage.getItem("data"));
-      this.setState({ data: data });
-    }
-  }
+  // componentDidMount() {
+  //   callApi("ListTask", "GET", null).then(res => {
+  //     this.setState({ data: res.data });
+  //   });
+  // }
+
   addItemHandler = title => {
     let count = 0;
     const { data } = this.state;
-    const newItem = {
-      id: Date.now(),
+    callApi("ListTask", "POST", {
       title: title,
-      done: false
-    };
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].title === title) {
-        count++;
+      status: false
+    }).then(res => {
+      const newItem = {
+        id: res.data.id,
+        title: title,
+        status: false
+      };
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].title === title) {
+          count++;
+        }
       }
-    }
-    if (count !== 0) {
-      alert("This title already exists !!!");
-    } else {
-      const newData = [...this.state.data, newItem];
-      this.setState({ data: newData });
-      localStorage.setItem("data", JSON.stringify(newData));
-    }
+      if (count !== 0) {
+        alert("This title already exists !!!");
+      } else {
+        const newData = [...this.state.data, newItem];
+        this.setState({ data: newData });
+      }
+    });
   };
   displayNoticedHandler = title => {
     const data = this.state.data;
-    if (title.trim() == "") {
+    if (title.trim() === "") {
       this.setState({
         isDisplay: false
       });
@@ -58,48 +62,64 @@ export default class TodoApp extends Component {
     return true;
   };
   removeItemHandler = id => {
-    const newData = this.state.data.filter(item => {
-      return item.id !== id;
+    callApi(`ListTask/${id}`, "DELETE", null).then(res => {
+      console.log(res);
+      if (res.status === 200) {
+        const newData = this.state.data.filter(item => {
+          return item.id !== id;
+        });
+        this.setState({ data: newData, dataVirtual: [], valueSearch: "" });
+      }
     });
-    this.setState({ data: newData, dataVirtual: [], valueSearch: "" });
-    // localStorage.removeItem("data");
-    localStorage.setItem("data", JSON.stringify(newData));
   };
   checkHandler = id => {
     const newData = this.state.data;
-    const index = newData.findIndex(item => {
-      return item.id == id;
-    });
-    newData[index].done = !newData[index].done;
 
+    const index = newData.findIndex(item => {
+      return item.id === id;
+    });
+    let done = newData[index].status;
+    newData[index].status = !done;
     this.setState({ data: newData });
-    localStorage.setItem("data", JSON.stringify(newData));
+    callApi(`ListTask/${id}`, "PUT", {
+      status: !done
+    }).then(res => {
+      console.log(res);
+    });
+    console.log(this.state.data);
   };
   sortHandler = () => {
     const newData = this.state.data.sort((itemA, itemB) => {
-      return itemA.done - itemB.done;
+      return itemA.status - itemB.status;
     });
     this.setState({ data: newData });
-    localStorage.setItem("data", JSON.stringify(newData));
   };
   chekAllhandler = () => {
+    // callApi(`ListTask`, "GET", null).then(res => {
+    //   for (let i = 0; i < res.data.length; i++) {
+    //     callApi(`ListTask/${res.data[i].id}`, "PUT", {
+    //       status: true
+    //     }).then(res => {
+    //       console.log(res.data.status);
+    //     });
+    //   }
+    // });
     const checker = this.state.checkItem;
     const data = this.state.data;
-    for (let item of data) {
+    for (var item of data) {
       if (checker) {
-        item.done = false;
+        item.status = false;
       } else {
-        item.done = true;
+        item.status = true;
       }
     }
     this.setState({ data: data, checkItem: !checker });
-    localStorage.setItem("data", JSON.stringify(data));
   };
   counterHandler = () => {
     const data = this.state.data;
     let checker = 0;
     for (let i = 0; i < data.length; i++) {
-      if (data[i].done === true) {
+      if (data[i].status === true) {
         checker++;
       }
     }
@@ -113,12 +133,11 @@ export default class TodoApp extends Component {
     data[index].title = title;
 
     this.setState({ data: data });
-    localStorage.setItem("data", JSON.stringify(data));
   };
   removeCheckedHandler = () => {
     const { data } = this.state;
     const newData = data.filter(item => {
-      return item.done != true;
+      return item.status !== true;
     });
     this.setState({
       data: newData,
@@ -126,7 +145,6 @@ export default class TodoApp extends Component {
       dataVirtual: [],
       valueSearch: ""
     });
-    localStorage.setItem("data", JSON.stringify(newData));
   };
   displayChecked = () => {
     let count = 0;
@@ -210,7 +228,7 @@ export default class TodoApp extends Component {
                       <Item
                         data={this.state.data}
                         notice={this.state.notification}
-                        done={item.done}
+                        status={item.status}
                         id={item.id}
                         title={item.title}
                         key={item.id}
@@ -244,7 +262,7 @@ export default class TodoApp extends Component {
                 <Item
                   data={this.state.data}
                   notice={this.state.notification}
-                  done={item.done}
+                  status={item.status}
                   id={item.id}
                   title={item.title}
                   key={item.id}
