@@ -113,6 +113,7 @@ export default class TodoApp extends Component {
         item.status = true;
       }
     }
+    console.log(this.state.data);
     this.setState({ data: data, checkItem: !checker });
   };
   counterHandler = () => {
