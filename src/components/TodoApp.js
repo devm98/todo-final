@@ -18,7 +18,6 @@ export default class TodoApp extends Component {
       this.setState({ data: res.data });
     });
   }
-
   addItemHandler = title => {
     let count = 0;
     const { data } = this.state;
@@ -83,6 +82,7 @@ export default class TodoApp extends Component {
     newData[index].status = !done;
     this.setState({ data: newData });
     callApi(`tasks/${id}`, "PUT", {
+      title: newData[index].title,
       status: !done
     }).then(res => {
       console.log(res);
@@ -96,12 +96,27 @@ export default class TodoApp extends Component {
     this.setState({ data: newData });
   };
   chekAllhandler = () => {
+    let count = 0;
     callApi(`tasks`, "GET", null).then(res => {
       for (let i = 0; i < res.data.length; i++) {
-        callApi(`tasks/${res.data[i].id}`, "PUT", {
-          title: res.data[i].title,
-          status: true
-        });
+        if (res.data[i].status === true) {
+          count++;
+        }
+      }
+      if (count === res.data.length) {
+        for (let i = 0; i < res.data.length; i++) {
+          callApi(`tasks/${res.data[i].id}`, "PUT", {
+            title: res.data[i].title,
+            status: false
+          });
+        }
+      } else {
+        for (let i = 0; i < res.data.length; i++) {
+          callApi(`tasks/${res.data[i].id}`, "PUT", {
+            title: res.data[i].title,
+            status: true
+          });
+        }
       }
     });
     const checker = this.state.checkItem;
@@ -127,6 +142,9 @@ export default class TodoApp extends Component {
     return checker;
   };
   updateHandler = (title, id) => {
+    callApi(`tasks/${id}`, "PUT", {
+      title: title
+    });
     const data = this.state.data;
     const index = data.findIndex(item => {
       return item.id === id;
@@ -138,7 +156,9 @@ export default class TodoApp extends Component {
   removeCheckedHandler = () => {
     callApi("tasks", "GET", null).then(res => {
       for (let i = 0; i < res.data.length; i++) {
-        callApi(`tasks/${res.data[i].id}`, "DELETE", null);
+        if (res.data[i].status === true) {
+          callApi(`tasks/${res.data[i].id}`, "DELETE", null);
+        }
       }
     });
     const { data } = this.state;
@@ -156,7 +176,7 @@ export default class TodoApp extends Component {
     let count = 0;
     const { data } = this.state;
     for (let i = 0; i < data.length; i++) {
-      if (data[i].done === true) {
+      if (data[i].status === true) {
         count++;
       }
     }

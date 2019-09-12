@@ -38,7 +38,6 @@ class Item extends React.Component {
   };
   changeTitleHandler = e => {
     this.setState({ value: e.target.value, notification: "" });
-
     if (e.target.value !== this.props.title.trim()) {
       if (this.props.displayNoticed(e.target.value) === true) {
         this.setState({
@@ -65,12 +64,15 @@ class Item extends React.Component {
   defaultValue = () => {
     this.setState({ value: this.props.title.trim(), notification: "" });
   };
-
+  // changeHanler = e => {
+  //   console.log(e.target.value.toUpperCase());
+  // };
   render() {
     return (
       <div style={styleItem}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <input
+            // onChange={this.changeHanler}
             onClick={this.checkStatusHandler}
             type="checkbox"
             className="mr-3"
