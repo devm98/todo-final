@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import callApi from "./../utils/apiCaller";
 
 const styleIpt = {
   width: "30%",

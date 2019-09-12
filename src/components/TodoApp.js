@@ -13,16 +13,17 @@ export default class TodoApp extends Component {
     valueSearch: "",
     dataVirtual: []
   };
-  // componentDidMount() {
-  //   callApi("ListTask", "GET", null).then(res => {
-  //     this.setState({ data: res.data });
-  //   });
-  // }
+  componentDidMount() {
+    callApi("tasks", "GET", null).then(res => {
+      this.setState({ data: res.data });
+    });
+  }
 
   addItemHandler = title => {
     let count = 0;
     const { data } = this.state;
-    callApi("ListTask", "POST", {
+    callApi("tasks", "POST", {
+      id: Date.now(),
       title: title,
       status: false
     }).then(res => {
@@ -62,7 +63,7 @@ export default class TodoApp extends Component {
     return true;
   };
   removeItemHandler = id => {
-    callApi(`ListTask/${id}`, "DELETE", null).then(res => {
+    callApi(`tasks/${id}`, "DELETE", null).then(res => {
       console.log(res);
       if (res.status === 200) {
         const newData = this.state.data.filter(item => {
@@ -81,7 +82,7 @@ export default class TodoApp extends Component {
     let done = newData[index].status;
     newData[index].status = !done;
     this.setState({ data: newData });
-    callApi(`ListTask/${id}`, "PUT", {
+    callApi(`tasks/${id}`, "PUT", {
       status: !done
     }).then(res => {
       console.log(res);
@@ -95,15 +96,14 @@ export default class TodoApp extends Component {
     this.setState({ data: newData });
   };
   chekAllhandler = () => {
-    // callApi(`ListTask`, "GET", null).then(res => {
-    //   for (let i = 0; i < res.data.length; i++) {
-    //     callApi(`ListTask/${res.data[i].id}`, "PUT", {
-    //       status: true
-    //     }).then(res => {
-    //       console.log(res.data.status);
-    //     });
-    //   }
-    // });
+    callApi(`tasks`, "GET", null).then(res => {
+      for (let i = 0; i < res.data.length; i++) {
+        callApi(`tasks/${res.data[i].id}`, "PUT", {
+          title: res.data[i].title,
+          status: true
+        });
+      }
+    });
     const checker = this.state.checkItem;
     const data = this.state.data;
     for (var item of data) {
@@ -135,6 +135,11 @@ export default class TodoApp extends Component {
     this.setState({ data: data });
   };
   removeCheckedHandler = () => {
+    callApi("tasks", "GET", null).then(res => {
+      for (let i = 0; i < res.data.length; i++) {
+        callApi(`tasks/${res.data[i].id}`, "DELETE", null);
+      }
+    });
     const { data } = this.state;
     const newData = data.filter(item => {
       return item.status !== true;
