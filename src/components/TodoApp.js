@@ -4,10 +4,9 @@ import ListItem from "./ListItem";
 import Item from "./Item";
 import NonTask from "./NonTask";
 import PopupNoticed from "./PopupNoticed";
-
-export default class TodoApp extends Component {
+import { connect } from "react-redux";
+class TodoApp extends Component {
   state = {
-    data: [],
     checkItem: false,
     isDisplay: true,
     valueSearch: "",
@@ -156,6 +155,7 @@ export default class TodoApp extends Component {
   };
 
   render() {
+    console.log(this.props.tasks);
     return (
       <div className="container">
         <div className=" mt-2 mb-3 ">
@@ -238,8 +238,8 @@ export default class TodoApp extends Component {
         ) : null}
 
         <ListItem widths="50%">
-          {this.state.data.length > 0 ? (
-            this.state.data.map((item, index) => {
+          {this.props.tasks.length > 0 ? (
+            this.props.tasks.map((item, index) => {
               return (
                 <Item
                   data={this.state.data}
@@ -265,3 +265,14 @@ export default class TodoApp extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    tasks: state.tasks
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(TodoApp);
