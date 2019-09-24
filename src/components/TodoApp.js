@@ -4,21 +4,16 @@ import ListItem from "./ListItem";
 import Item from "./Item";
 import NonTask from "./NonTask";
 import PopupNoticed from "./PopupNoticed";
+import { connect } from "react-redux";
 
 class TodoApp extends Component {
   state = {
-    data: [],
     checkItem: false,
     isDisplay: true,
     valueSearch: "",
     dataVirtual: []
   };
-  componentWillMount() {
-    if (localStorage && localStorage.getItem("data")) {
-      let data = JSON.parse(localStorage.getItem("data"));
-      this.setState({ data: data });
-    }
-  }
+
   addItemHandler = title => {
     let count = 0;
     const { data } = this.state;
@@ -37,11 +32,10 @@ class TodoApp extends Component {
     } else {
       const newData = [...this.state.data, newItem];
       this.setState({ data: newData });
-      localStorage.setItem("data", JSON.stringify(newData));
     }
   };
   displayNoticedHandler = title => {
-    const data = this.state.data;
+    const data = this.props.tasks;
     if (title.trim() == "") {
       this.setState({
         isDisplay: false
@@ -57,34 +51,30 @@ class TodoApp extends Component {
     this.setState({ isDisplay: true });
     return true;
   };
-  removeItemHandler = id => {
-    const newData = this.state.data.filter(item => {
-      return item.id !== id;
-    });
-    this.setState({ data: newData, dataVirtual: [], valueSearch: "" });
-    // localStorage.removeItem("data");
-    localStorage.setItem("data", JSON.stringify(newData));
-  };
-  checkHandler = id => {
-    const newData = this.state.data;
-    const index = newData.findIndex(item => {
-      return item.id == id;
-    });
-    newData[index].done = !newData[index].done;
+  // removeItemHandler = id => {
+  //   const newData = this.props.tasks.filter(item => {
+  //     return item.id !== id;
+  //   });
+  //   this.setState({ data: newData, dataVirtual: [], valueSearch: "" });
+  // };
+  // checkHandler = id => {
+  //   const newData = this.props.tasks;
+  //   const index = newData.findIndex(item => {
+  //     return item.id == id;
+  //   });
+  //   newData[index].done = !newData[index].done;
 
-    this.setState({ data: newData });
-    localStorage.setItem("data", JSON.stringify(newData));
-  };
+  //   this.setState({ data: newData });
+  // };
   sortHandler = () => {
-    const newData = this.state.data.sort((itemA, itemB) => {
+    const newData = this.props.tasks.sort((itemA, itemB) => {
       return itemA.done - itemB.done;
     });
     this.setState({ data: newData });
-    localStorage.setItem("data", JSON.stringify(newData));
   };
   chekAllhandler = () => {
     const checker = this.state.checkItem;
-    const data = this.state.data;
+    const data = this.props.tasks;
     for (let item of data) {
       if (checker) {
         item.done = false;
@@ -93,10 +83,9 @@ class TodoApp extends Component {
       }
     }
     this.setState({ data: data, checkItem: !checker });
-    localStorage.setItem("data", JSON.stringify(data));
   };
   counterHandler = () => {
-    const data = this.state.data;
+    const data = this.props.tasks;
     let checker = 0;
     for (let i = 0; i < data.length; i++) {
       if (data[i].done === true) {
@@ -106,37 +95,35 @@ class TodoApp extends Component {
     return checker;
   };
   updateHandler = (title, id) => {
-    const data = this.state.data;
+    const data = this.props.tasks;
     const index = data.findIndex(item => {
       return item.id === id;
     });
     data[index].title = title;
 
     this.setState({ data: data });
-    localStorage.setItem("data", JSON.stringify(data));
   };
   removeCheckedHandler = () => {
-    const { data } = this.state;
-    const newData = data.filter(item => {
+    const { tasks } = this.props;
+    const newData = tasks.filter(item => {
       return item.done != true;
     });
     this.setState({
-      data: newData,
+      tasks: newData,
       checkItem: !this.state.checkItem,
       dataVirtual: [],
       valueSearch: ""
     });
-    localStorage.setItem("data", JSON.stringify(newData));
   };
   displayChecked = () => {
     let count = 0;
-    const { data } = this.state;
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].done === true) {
+    const { tasks } = this.props;
+    for (let i = 0; i < tasks.length; i++) {
+      if (tasks[i].done === true) {
         count++;
       }
     }
-    if (count === data.length) {
+    if (count === tasks.length) {
       this.state.checkItem = true;
     } else {
       this.state.checkItem = false;
@@ -147,7 +134,7 @@ class TodoApp extends Component {
   };
   submitValueSearchHandler = e => {
     e.preventDefault();
-    const newData = this.state.data.filter(task => {
+    const newData = this.props.tasks.filter(task => {
       let title = task.title.toLowerCase();
       let value = this.state.valueSearch.toLowerCase();
       return title.includes(value);
@@ -156,14 +143,13 @@ class TodoApp extends Component {
   };
 
   render() {
-    console.log(this.props.tasks);
     return (
       <div className="container">
         <div className=" mt-2 mb-3 ">
           <h1 className="text-primary d-inline-block  mt-2 mb-3">App Todo</h1>
           <InputGroup popup={this.state.popup} add={this.addItemHandler} />
         </div>
-        {this.state.data.length > 0 ? (
+        {this.props.tasks.length > 0 ? (
           <div>
             <div className="mb-2 mt-2">
               <button
@@ -233,14 +219,14 @@ class TodoApp extends Component {
               />
             </div>
             <h5 className="">
-              Checked: {this.counterHandler()}/{this.state.data.length}
+              Checked: {this.counterHandler()}/{this.props.tasks.length}
             </h5>
           </div>
         ) : null}
 
         <ListItem widths="50%">
-          {this.state.data.length > 0 ? (
-            this.state.data.map((item, index) => {
+          {this.props.tasks.length > 0 ? (
+            this.props.tasks.map((item, index) => {
               return (
                 <Item
                   data={this.state.data}
@@ -250,8 +236,8 @@ class TodoApp extends Component {
                   title={item.title}
                   key={item.id}
                   stt={index + 1}
-                  remove={this.removeItemHandler}
-                  check={this.checkHandler}
+                  // remove={this.removeItemHandler}
+                  // check={this.checkHandler}
                   update={this.updateHandler}
                   displayNoticed={this.displayNoticedHandler}
                   display={this.state.isDisplay}
@@ -267,4 +253,13 @@ class TodoApp extends Component {
   }
 }
 
-export default TodoApp;
+const mapStateToProps = state => {
+  return {
+    tasks: state.tasks
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  null
+)(TodoApp);

@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import * as actions from "./../actions";
+
 const styleIpt = {
   width: "30%",
   padding: "10px",
@@ -20,22 +23,20 @@ const styleBtn = {
   fontWeight: "600"
 };
 
-export default class InputGroup extends Component {
-  state = {
-    value: ""
-  };
+class InputGroup extends Component {
   changeValueHanler = event => {
-    this.setState({ value: event.target.value });
+    console.log(event.target.value);
+    this.props.changeValue(event.target.value);
   };
   submitHandler = event => {
     event.preventDefault();
-    let vl = this.state.value.trim();
+    let vl = this.props.value.trim();
     if (vl !== "") {
-      this.props.add(vl);
+      this.props.addTask(this.props.value);
+      this.props.cleanValue();
     } else {
       alert("Nho nhap ban oi ~");
     }
-    this.state.value = "";
   };
   render() {
     return (
@@ -65,7 +66,7 @@ export default class InputGroup extends Component {
               >
                 <input
                   onChange={this.changeValueHanler}
-                  value={this.state.value}
+                  value={this.props.value}
                   type="text"
                   placeholder="Input your here..."
                   style={styleIpt}
@@ -86,3 +87,28 @@ export default class InputGroup extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    value: state.title
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    changeValue: title => {
+      dispatch(actions.changeValue(title));
+    },
+    addTask: title => {
+      dispatch(actions.addTask(title));
+    },
+    cleanValue: () => {
+      dispatch(actions.cleanTitle());
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(InputGroup);

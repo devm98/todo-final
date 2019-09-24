@@ -1,0 +1,17 @@
+const LIST_ALL = "LIST_ALL";
+const ADD_TASK = "ADD_TASK";
+const DEL_TASK = "DEL_TASK";
+const CHECKED = "CHECKED";
+const CHANGE_TITLE = "CHANGE_TITLE";
+const CLEAN = "CLEAN";
+const EDIT_TASK = "EDIT_TASK";
+
+export {
+  LIST_ALL,
+  ADD_TASK,
+  DEL_TASK,
+  CHECKED,
+  CHANGE_TITLE,
+  CLEAN,
+  EDIT_TASK
+};

@@ -1,5 +1,7 @@
 import React from "react";
 import PopupNoticed from "./PopupNoticed";
+import { connect } from "react-redux";
+import * as actions from "./../actions";
 const styleItem = {
   display: "flex",
   alignItems: "center",
@@ -13,23 +15,23 @@ class Item extends React.Component {
     dismiss: "none",
     notification: ""
   };
-  componentWillMount() {
-    if (localStorage && localStorage.getItem("value")) {
-      let value = JSON.parse(localStorage.getItem("value"));
-      this.setState({ value: value });
-    }
-    if (localStorage && localStorage.getItem("changeVL")) {
-      let value = JSON.parse(localStorage.getItem("changVL"));
-      if (value == this.props.title.trim()) {
-        this.setState({ notification: "*You not update!!!*" });
-      }
-    }
-  }
+  // componentWillMount() {
+  //   if (localStorage && localStorage.getItem("value")) {
+  //     let value = JSON.parse(localStorage.getItem("value"));
+  //     this.setState({ value: value });
+  //   }
+  //   if (localStorage && localStorage.getItem("changeVL")) {
+  //     let value = JSON.parse(localStorage.getItem("changVL"));
+  //     if (value == this.props.title.trim()) {
+  //       this.setState({ notification: "*You not update!!!*" });
+  //     }
+  //   }
+  // }
   removeItem = () => {
-    this.props.remove(this.props.id);
+    this.props.removeTask(this.props.id);
   };
   checkStatusHandler = () => {
-    this.props.check(this.props.id);
+    this.props.checkedTask(this.props.id);
   };
   saveDataHandler = () => {
     if (this.state.value !== this.props.title.trim()) {
@@ -194,4 +196,18 @@ class Item extends React.Component {
   }
 }
 
-export default Item;
+const mapDispatchToProps = dispatch => {
+  return {
+    removeTask: id => {
+      dispatch(actions.removeTask(id));
+    },
+    checkedTask: id => {
+      dispatch(actions.checkedTask(id));
+    }
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Item);
